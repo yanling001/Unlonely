@@ -1,13 +1,14 @@
-package com.hongyaoz.unlonely;
+package com.hongyaoz.unlonelyupmsserver;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UnlonelyApplication {
+public class UnlonelyUpmsServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UnlonelyApplication.class, args);
+        SpringApplication.run(UnlonelyUpmsServerApplication.class, args);
     }
 
 }
