@@ -8,10 +8,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>com.hongyaoz</groupId>
-    <artifactId>unlonely-upms-server</artifactId>
+    <artifactId>unlonely-upms-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>unlonely-upms-server</name>
-    <packaging>pom</packaging>
+    <name>unlonely-upms-client</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -22,11 +21,6 @@
         <dependency>
             <groupId>com.hongyaoz</groupId>
             <artifactId>unlonely-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hongyaoz</groupId>
-            <artifactId>unlonely-upms-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
