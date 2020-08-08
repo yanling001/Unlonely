@@ -1,5 +1,8 @@
 package com.hongyaoz.unlonelyupmsdao.pojo;
 
+import com.hongyaoz.unlonelyupmsdao.dao.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Date;
 
 public class User {

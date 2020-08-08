@@ -1,4 +1,4 @@
-package com.hongyaoz.unlonelyupmsdao.dao;
+package com.hongyaoz.unlonelyupmsserver.dao;
 
 import com.hongyaoz.unlonelyupmsdao.pojo.User;
 import org.springframework.stereotype.Repository;
@@ -16,4 +16,6 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    User selectpasswordbyaccountnum(String accountnum);
 }

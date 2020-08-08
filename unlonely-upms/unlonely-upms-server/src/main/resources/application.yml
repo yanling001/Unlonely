@@ -1,0 +1,3 @@
+mybatis:
+  type-aliases-package: com.hongyaoz.unlonelyupmsserver.dao
+  mapper-locations: classpath:mapper/*Mapper.xml
