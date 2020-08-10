@@ -1,3 +1,21 @@
-mybatis:
-  type-aliases-package: com.hongyaoz.unlonelyupmsserver.dao
-  mapper-locations: classpath:mapper/*Mapper.xml
+server:
+  port: 8001
+  tomcat.uri-encoding: UTF-8
+  servlet:
+    context-path: /client
+spring:
+  datasource:
+    driver-class-name:  com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/unlonely?&serverTimezone=UTC&characterEncoding=utf-8
+    username: root
+    password: 123456
+  redis:
+    database: 0
+    host: 114.55.145.30
+    port: 6379
+    password: 123456
+    timeout: 5000
+
+ssourl:
+  server_url: http://localhost:8000/server/sso
+  client_url: http://localhost:8001/client

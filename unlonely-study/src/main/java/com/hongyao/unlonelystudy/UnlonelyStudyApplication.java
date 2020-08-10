@@ -1,14 +1,13 @@
-package com.hongyaoz.unlonelyupmsdao;
+package com.hongyao.unlonelystudy;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UnlonelyUpmsDaoApplication {
+public class UnlonelyStudyApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UnlonelyUpmsDaoApplication.class, args);
+        SpringApplication.run(UnlonelyStudyApplication.class, args);
     }
 
 }

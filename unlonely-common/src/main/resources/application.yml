@@ -1,15 +1,19 @@
 server:
-  port: 8090
+  port: 8001
   tomcat.uri-encoding: UTF-8
   servlet:
-    context-path: /school
+    context-path: /client
 spring:
   datasource:
     driver-class-name:  com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/unlonely?&serverTimezone=UTC&characterEncoding=utf-8
     username: root
-    password: 12345678
+    password: 123456
   redis:
     database: 0
     host: 127.0.0.1
     port: 6379
+
+ssourl:
+  server_url: http://localhost:8090/server/sso
+  client_url: http://localhost:8001/client
