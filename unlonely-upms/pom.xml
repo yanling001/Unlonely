@@ -29,5 +29,6 @@
     <modules>
         <module>unlonely-upms-server</module>
         <module>unlonely-upms-dao</module>
+        <module>unlonely-upms-client</module>
     </modules>
 </project>

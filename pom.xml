@@ -17,5 +17,6 @@
     <modules>
         <module>unlonely-common</module>
         <module>unlonely-upms</module>
+        <module>unlonely-study</module>
     </modules>
 </project>

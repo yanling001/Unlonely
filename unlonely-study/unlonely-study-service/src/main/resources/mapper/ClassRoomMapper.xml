@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hongyaoz.unlonelystudyservice.dao.ClassRoomMapper" >
+  <resultMap id="BaseResultMap" type="com.hongyaoz.unlonelystudyapi.pojo.ClassRoom" >
+    <constructor >
+      <idArg column="room_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="room_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="room_url" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="subject" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="teaching_building" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="room_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    room_id, room_name, room_url, subject, teaching_building, user_id, room_status, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from classroom
+    where room_id = #{roomId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from classroom
+    where room_id = #{roomId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hongyaoz.unlonelystudyapi.pojo.ClassRoom" >
+    insert into classroom (room_id, room_name, room_url, 
+      subject, teaching_building, user_id, 
+      room_status, create_time, update_time
+      )
+    values (#{roomId,jdbcType=INTEGER}, #{roomName,jdbcType=VARCHAR}, #{roomUrl,jdbcType=VARCHAR}, 
+      #{subject,jdbcType=VARCHAR}, #{teachingBuilding,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, 
+      #{roomStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hongyaoz.unlonelystudyapi.pojo.ClassRoom" >
+    insert into classroom
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roomId != null" >
+        room_id,
+      </if>
+      <if test="roomName != null" >
+        room_name,
+      </if>
+      <if test="roomUrl != null" >
+        room_url,
+      </if>
+      <if test="subject != null" >
+        subject,
+      </if>
+      <if test="teachingBuilding != null" >
+        teaching_building,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="roomStatus != null" >
+        room_status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roomId != null" >
+        #{roomId,jdbcType=INTEGER},
+      </if>
+      <if test="roomName != null" >
+        #{roomName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomUrl != null" >
+        #{roomUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="teachingBuilding != null" >
+        #{teachingBuilding,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomStatus != null" >
+        #{roomStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hongyaoz.unlonelystudyapi.pojo.ClassRoom" >
+    update classroom
+    <set >
+      <if test="roomName != null" >
+        room_name = #{roomName,jdbcType=VARCHAR},
+      </if>
+      <if test="roomUrl != null" >
+        room_url = #{roomUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="subject != null" >
+        subject = #{subject,jdbcType=VARCHAR},
+      </if>
+      <if test="teachingBuilding != null" >
+        teaching_building = #{teachingBuilding,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomStatus != null" >
+        room_status = #{roomStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where room_id = #{roomId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hongyaoz.unlonelystudyapi.pojo.ClassRoom" >
+    update classroom
+    set room_name = #{roomName,jdbcType=VARCHAR},
+      room_url = #{roomUrl,jdbcType=VARCHAR},
+      subject = #{subject,jdbcType=VARCHAR},
+      teaching_building = #{teachingBuilding,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      room_status = #{roomStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where room_id = #{roomId,jdbcType=INTEGER}
+  </update>
+</mapper>
