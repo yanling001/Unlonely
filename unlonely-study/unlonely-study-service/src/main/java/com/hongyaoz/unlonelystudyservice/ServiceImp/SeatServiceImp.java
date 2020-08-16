@@ -45,4 +45,15 @@ public class SeatServiceImp implements SeatService {
       List<Seat> list= seatMapper.selectfreeSeats(classroom.getRoomId(),0);
         return ServiceResponse.createBysuccessMessage(list);
     }
+
+    public boolean setSeatStatus(Integer message) {
+        Seat seat=new Seat();
+        seat.setSeatStatus(0);
+        seat.setSeatId(message);
+      int count =  seatMapper.updateByPrimaryKeySelective(seat);
+      if (count>0){
+          return true;
+      }
+        return false;
+    }
 }

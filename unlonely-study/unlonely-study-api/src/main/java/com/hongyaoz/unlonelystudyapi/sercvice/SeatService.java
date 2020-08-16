@@ -10,4 +10,6 @@ public interface SeatService {
     ServiceResponse chooseSeat(Seat seat);
     ServiceResponse orderSeat(Seat seat);
     ServiceResponse<List<Seat>> getfreeSeat(Classroom classroom);
+
+    boolean setSeatStatus(Integer message);
 }

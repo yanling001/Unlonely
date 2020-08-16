@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.hongyaoz.unlonelystudyapi.sercvice.RoomService;
 import com.hongyaoz.unlonelystudyweb.common.Message;
 import jdk.nashorn.internal.ir.annotations.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +32,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @EnableScheduling
 public class WebSocketServer {
 
+    @Autowired
+    private KafkaTemplate  kafkaTemplate;
+
     @Reference
     RoomService roomService;
     // 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
@@ -41,6 +46,7 @@ public class WebSocketServer {
     private Session session;
     private String room;
     private String role;
+    private String seat;
     /**
      * 连接建立成功调用的方法
      *
@@ -52,6 +58,7 @@ public class WebSocketServer {
         String[] split = param.split("&");
         this.role = split[0];             //用户标识
         this.room=split[1];
+        this.seat=split[2];
         if (roomService.checkuserAndroom(Integer.parseInt(room),Integer.parseInt(role))) {
             roomService.opencalssroom(Integer.parseInt(room),Integer.parseInt(role));
             CopyOnWriteArraySet copyOnWriteArraySet = new CopyOnWriteArraySet();
@@ -81,7 +88,7 @@ public class WebSocketServer {
             subOnlineCount();          // 在线数减
         }
         webSocketServers.remove(role);
-
+       kafkaTemplate.send("reseat",Integer.parseInt(seat));
         System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
     /**
