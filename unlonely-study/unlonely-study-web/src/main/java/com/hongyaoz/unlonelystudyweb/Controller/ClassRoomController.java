@@ -1,5 +1,6 @@
 package com.hongyaoz.unlonelystudyweb.Controller;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.hongyaoz.unlonelycommon.common.ServiceResponse;
 import com.hongyaoz.unlonelystudyapi.pojo.Classroom;
@@ -15,9 +16,27 @@ public class ClassRoomController {
     RoomService roomService;
     @RequestMapping("/createroom")
     @ResponseBody
+    //创建room
     public ServiceResponse createroom(Classroom classroom){
 
         if (classroom.getUserId()==null) return ServiceResponse.createByErrorMessage("参数错误");
        return roomService.createcalssroom(classroom);
+    }
+
+    @RequestMapping("/allonlineroom")
+    @ResponseBody
+    //获取在线room
+    public ServiceResponse getonlineroom(){
+
+        return roomService.allonlineroom();
+    }
+
+    @RequestMapping("/onlineroom")
+    @ResponseBody
+    //获取此教学楼在线room
+    public ServiceResponse getonlineroombybuilding(String teachingBuilding){
+
+        if (StringUtils.isBlank(teachingBuilding)) return ServiceResponse.createByErrorMessage("参数错误");
+        return roomService.getonlineroombybuilding(teachingBuilding);
     }
 }

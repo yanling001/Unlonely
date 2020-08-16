@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>websocket测试</title>
+</head>
+<body>
+
+
+<input type="text" id="text"><button onclick="sendText()">发送</button>
+<input type="file" id="f" onchange="chooseFile()">
+
+<div id="main">
+
+</div>
+
+
+
+<script type="text/javascript">
+
+    var ws = new WebSocket('ws://localhost:8002/study/webSocketRoom/'+"1")
+
+    ws.onopen = function (ev) {
+
+        console.log("------连接服务器成功-----")
+
+    }
+
+    ws.onerror=function (ev) {
+        console.log("------连接服务器出错-----")
+    }
+
+
+    //接收消息
+    ws.onmessage=function (ev) {
+       console.log(ev.data)
+        //解析json
+        var json = JSON.parse(ev.data);
+
+        //1为文本消息
+        if(json.code==1){
+            document.querySelector("#main").innerHTML="<p>"+json.story+"</p>"+document.querySelector("#main").innerHTML;
+            //2为图片消息
+        }else if(json.code==2){
+
+            document.querySelector("#main").innerHTML='<img width="150px" src='+json.story+'>'+document.querySelector("#main").innerHTML;
+        }
+
+
+    }
+
+    //发送文本消息
+    function sendText() {
+
+        var msg = document.querySelector("#text").value
+
+        if(msg){
+
+            //JSON.stringify({"story":message,"time":"2020-2-16","million":"12435656","to":"1"})
+            ws.send(JSON.stringify({"code":1,"story":msg,"time":"2020-2-16","million":"12435656","to":"1","imageurl":"https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJEVmpaEF9QiayJdicaBGwxUJl8XfS8Lpw6VDuDc2kJvG1NjFxZDUg1ICMRFXzmBFVOiagALMu0I4oSQ/132"}));
+
+            document.querySelector("#text").value=""
+        }
+
+    }
+
+
+    //发送图片消息
+    function chooseFile() {
+
+
+        var files = document.querySelector("#f").files
+
+
+        if(files.length>0){
+            var fileReader = new FileReader();
+
+            fileReader.readAsDataURL(files[0])
+
+            fileReader.onload=function (e) {
+                //JSON.stringify({"story":message,"time":"2020-2-16","million":"12435656","to":"1"})
+
+                var s = JSON.stringify({"code":2,"story":e.target.result,"time":"2020-2-16","million":"12435656","to":"1"});
+
+                ws.send(s)
+
+            }
+        }
+
+    }
+
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

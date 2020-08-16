@@ -141,4 +141,20 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where room_id = #{roomId,jdbcType=INTEGER}
   </update>
+
+  <!--自定义-->
+  <select id="selectallonlineroom" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from classroom
+    where room_status =  #{roomStatus,jdbcType=INTEGER}
+  </select>
+
+  <select id="getonlineroombybuilding" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from classroom
+    where room_status =  #{roomStatus,jdbcType=INTEGER} and
+    teaching_building = #{teachingBuilding,jdbcType=VARCHAR}
+  </select>
 </mapper>

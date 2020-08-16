@@ -2,11 +2,9 @@ package com.hongyaoz.unlonelystudyweb.Controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hongyaoz.unlonelystudyapi.pojo.Classroom;
 import com.hongyaoz.unlonelystudyapi.sercvice.RoomService;
 import com.hongyaoz.unlonelystudyweb.common.Message;
 import jdk.nashorn.internal.ir.annotations.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +15,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 
-@ServerEndpoint(value = "/webSocketOneToOne/{param}")
+@ServerEndpoint(value = "/webSocketRoom/{param}")
 @EnableScheduling
 public class WebSocketServer {
 
@@ -36,12 +35,12 @@ public class WebSocketServer {
     // 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private volatile static int onlineCount;
     //实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key为用户标识
-    private static Map<String, WebSocketServer> connections = new ConcurrentHashMap<String, WebSocketServer>();
+    private static Map<String, CopyOnWriteArraySet<WebSocketServer>> connections = new ConcurrentHashMap<String, CopyOnWriteArraySet<WebSocketServer>>();
     private static Map<String, Queue<Message>> msg = new ConcurrentHashMap<String, Queue<Message>>();
     // 与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
+    private String room;
     private String role;
-    private List<String> list;
     /**
      * 连接建立成功调用的方法
      *
@@ -50,17 +49,22 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(@PathParam("param") String param, Session session) {
         this.session = session;
-        this.role = param;             //用户标识
-        this.list = new ArrayList<String>();    //存离线消息
-        connections.put(role, this);     //添加到map中
-       // roomService.
-        //判断消息队列
-        if (msg.get(role)!=null){
-            for (int i=0;i<msg.get(role).size();i++){
-                send(msg.get(role).poll(),role);
-            }
+        String[] split = param.split("&");
+        this.role = split[0];             //用户标识
+        this.room=split[1];
+        if (roomService.checkuserAndroom(Integer.parseInt(room),Integer.parseInt(role))) {
+            roomService.opencalssroom(Integer.parseInt(room),Integer.parseInt(role));
+            CopyOnWriteArraySet copyOnWriteArraySet = new CopyOnWriteArraySet();
+            copyOnWriteArraySet.add(this);
+            connections.put(room, copyOnWriteArraySet);     //添加到map中
+            addOnlineCount();               // 在线房间数增加
+        }else {
+            CopyOnWriteArraySet<WebSocketServer> webSocketServers = connections.get(room);
+            if (webSocketServers==null) return;
+            webSocketServers.add(this);
+            connections.put(room,webSocketServers);
         }
-        addOnlineCount();               // 在线数加
+
         System.out.println("有新连接加入！新用户：" + role + ",当前在线人数为" + getOnlineCount());
     }
     /**
@@ -68,8 +72,16 @@ public class WebSocketServer {
      */
     @OnClose
     public void onClose() {
-        connections.remove(role);  // 从map中移除
-        subOnlineCount();          // 在线数减
+        CopyOnWriteArraySet<WebSocketServer> webSocketServers = connections.get(room);
+        if (roomService.checkuserAndroom(Integer.parseInt(room),Integer.parseInt(role))) {
+            for (WebSocketServer webSocketServer:webSocketServers){
+                webSocketServer.onClose();
+            }
+            connections.remove(room);
+            subOnlineCount();          // 在线数减
+        }
+        webSocketServers.remove(role);
+
         System.out.println("有一连接关闭！当前在线人数为" + getOnlineCount());
     }
     /**
@@ -84,12 +96,12 @@ public class WebSocketServer {
         JSONObject json = JSONObject.parseObject(message);
         System.out.println((String) json.get("msg"));
         String string = null;  //需要发送的信息
-        String to = null;      //发送对象的用户标识
+        String room = null;      //发送对象的用户标识
         if (json.get("story")!=null) {
             string = (String) json.get("story");
         }
         if (json.get("to")!=null) {
-            to = (String) json.get("to");
+            room = (String) json.get("to");
         }
         Message ms=new Message();
         ms.setStory(string);
@@ -98,16 +110,9 @@ public class WebSocketServer {
         ms.setTime((String) json.get("time"));
         ms.setCode((Integer) json.get("code"));
         ms.setFromurl(json.getString("imageurl"));
-        sentall(ms);
-       if (connections.containsKey(to))
-        send(ms, to);
-       else {
-           System.out.println(to);
-           if(!msg.containsKey(to)){
-               msg.put(to,new LinkedList<Message>());//添加消息队列
-           }
-           msg.get(to).add(ms);
-       }
+       if (connections.containsKey(room))
+        send(ms, room);
+
 
     }
     /**
@@ -127,21 +132,12 @@ public class WebSocketServer {
         System.out.println("send  " + message.getStory() + "  " + message.getFrom() + "  " + to);
         try {
             //to指定用户
-            WebSocketServer con = connections.get(to);
-            if (con != null) {
-                con.session.getBasicRemote().sendText(JSON.toJSONString(message));
+            CopyOnWriteArraySet<WebSocketServer> con = connections.get(to);
+            for (WebSocketServer webSocketServer:con)
+            if (webSocketServer != null) {
+                webSocketServer.session.getBasicRemote().sendText(JSON.toJSONString(message));
             }
 
-//            //from具体用户
-//
-//            WebSocketServer confrom = connections.get(from);
-//
-//            if (confrom != null) {
-//
-//                confrom.session.getBasicRemote().sendText(from + "说：" + msg);
-//
-//
-//            }
 
         } catch (IOException e) {
 
@@ -170,16 +166,11 @@ public class WebSocketServer {
     private void configureTasks() throws Exception{
         Message message=new Message();
         message.setCode(2);
-        for (Map.Entry<String,WebSocketServer> entry:WebSocketServer.connections.entrySet()){
-            WebSocketServer.send(message,entry.getValue().role);
+        for (Map.Entry<String,CopyOnWriteArraySet<WebSocketServer>> entry:WebSocketServer.connections.entrySet()){
+            WebSocketServer.send(message,entry.getKey());
         }
     }
 
-    private static void sentall(Message message) {
-        for (Map.Entry<String,WebSocketServer> entry:WebSocketServer.connections.entrySet()){
-            WebSocketServer.send(message,entry.getValue().role);
-        }
-    }
 }
 
 

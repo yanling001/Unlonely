@@ -116,4 +116,19 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where seat_id = #{seatId,jdbcType=INTEGER}
   </update>
+
+  <!--自定义-->
+  <select id="selectfreeSeats" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from seat
+    where room_id = #{roomId,jdbcType=INTEGER} and   seat_status = #{status,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByseatnumandroomid" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from seat
+    where room_id = #{roomId,jdbcType=INTEGER} and   seat_num = #{seatNum,jdbcType=INTEGER}
+  </select>
 </mapper>
